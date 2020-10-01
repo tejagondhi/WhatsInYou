@@ -57,15 +57,18 @@ public class FeedAdapter extends ArrayAdapter<String> implements DownloadComplet
         ImageView download= rowView.findViewById(R.id.downloadImage);
         ImageView logo= rowView.findViewById(R.id.logo);
         final ImageView share= rowView.findViewById(R.id.shareImage);
+        ImageView delete= rowView.findViewById(R.id.delete);
 
-        title.setText(feedData.get(position).getSource());
-        if(feedData.get(position).getSource().equalsIgnoreCase("facebook")){
+        String titleText=feedData.get(position).getSource();
+        title.setText(titleText);
+        if (titleText.equalsIgnoreCase("facebook")) {
             logo.setImageResource(R.drawable.facebook);
-        }else if (feedData.get(position).getSource().equalsIgnoreCase("instagram")){
+        } else if (titleText.equalsIgnoreCase("instagram")) {
             logo.setImageResource(R.drawable.instagram);
-        }else{
+        } else {
             logo.setImageResource(R.drawable.youtube);
         }
+
         if(feedData.get(position).getIsVideo()) {
             videoView.setVideoSize(Integer.parseInt(feedData.get(position).getWidth()),Integer.parseInt(feedData.get(position).getHeight()));
             videoView.setVisibility(View.VISIBLE);
@@ -115,6 +118,7 @@ public class FeedAdapter extends ArrayAdapter<String> implements DownloadComplet
 
         download.setOnClickListener(new ActionButtonListener(position));
         share.setOnClickListener(new ActionButtonListener(position));
+        delete.setOnClickListener(new ActionButtonListener(position));
         return rowView;
     }
 
@@ -146,6 +150,9 @@ public class FeedAdapter extends ArrayAdapter<String> implements DownloadComplet
     public void onDownloadComplete(int position) {
         share(position);
     }
+    private void delete(int position) {
+        ((MainActivity)context).delete(feedData.get(position).getID());
+    }
 
     public class ActionButtonListener implements View.OnClickListener {
         int position;
@@ -162,6 +169,9 @@ public class FeedAdapter extends ArrayAdapter<String> implements DownloadComplet
                     break;
                 case R.id.shareImage:
                     download(position,FeedAdapter.this);
+                    break;
+                case R.id.delete:
+                    delete(position);
                     break;
             }
         }

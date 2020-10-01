@@ -85,11 +85,11 @@ public class DBHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public Integer deleteFeed (Integer id) {
+    public Boolean deleteFeed (String id) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(FEED_TABLE_NAME,
                 "id = ? ",
-                new String[] { Integer.toString(id) });
+                new String[] { id }) > 0;
     }
 
     public ArrayList<FeedDataObject> getFeed() {

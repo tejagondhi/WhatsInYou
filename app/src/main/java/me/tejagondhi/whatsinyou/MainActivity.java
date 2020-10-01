@@ -169,6 +169,12 @@ public class MainActivity extends AppCompatActivity implements InstagramObjectRe
         }
     }
 
+    public void delete(String id){
+        if(dbHelper.deleteFeed(id)){
+            displayFeed();
+        }
+    }
+
     @Override
     public void OnFacebookObjectReady(FeedDataObject facebookData) {
         if(dbHelper.insertFeed(facebookData)){
