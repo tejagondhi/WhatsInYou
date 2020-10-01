@@ -1,15 +1,23 @@
 package me.tejagondhi.whatsinyou.Data;
 
-import android.graphics.Bitmap;
+public class FeedDataObject {
+    private String url;
+    private Boolean isVideo;
+    private String extension;
+    private String name;
+    private String originalURL;
+    private String height;
+    private String width;
+    private String source;
+    private String ID;
 
-public class Instagram {
-    String url;
-    Boolean isVideo;
-    String extension;
-    String name;
-    String originalURL;
-    String height;
-    String width;
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
 
     public String getName() {
         return name;
@@ -66,5 +74,13 @@ public class Instagram {
 
     public void setWidth(String width) {
         this.width = width;
+    }
+
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
     }
 }

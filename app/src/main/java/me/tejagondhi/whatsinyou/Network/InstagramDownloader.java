@@ -9,14 +9,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import me.tejagondhi.whatsinyou.CallBacks.InstagramObjectReady;
-import me.tejagondhi.whatsinyou.Data.Instagram;
+import me.tejagondhi.whatsinyou.Data.FeedDataObject;
 
 public class InstagramDownloader  {
 
     private final InstagramObjectReady callback;
     private String url;
-    JSONObject response=null;
-    private Instagram insta;
 
     public InstagramDownloader(String url, InstagramObjectReady callback) {
        this.url=url;
@@ -24,15 +22,14 @@ public class InstagramDownloader  {
        getImageJson();
     }
 
-    public JSONObject getImageJson(){
+    public void getImageJson(){
         AndroidNetworking.get(url)
-                .setTag("test")
+                .setTag("INSTA")
                 .setPriority(Priority.LOW)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        // do anything with response
                         try {
                             saveInstaObject(response);
                         } catch (JSONException e) {
@@ -43,30 +40,23 @@ public class InstagramDownloader  {
                     public void onError(ANError error) {
                     }
                 });
-        return response;
     }
 
     private void saveInstaObject(JSONObject response) throws JSONException {
-        insta=new Instagram();
-        insta.setOriginalURL(url);
+        FeedDataObject dataObject = new FeedDataObject();
+        dataObject.setOriginalURL(url);
         if (response.getJSONObject("graphql").getJSONObject("shortcode_media").getBoolean("is_video")) {
-            insta.setUrl(response.getJSONObject("graphql").getJSONObject("shortcode_media").getString("video_url"));
-            insta.setName(response.getJSONObject("graphql").getJSONObject("shortcode_media").getString("id"));
-            insta.setExtension(".mp4");
-            insta.setIsVideo(true);
-            insta.setHeight(response.getJSONObject("graphql").getJSONObject("shortcode_media").getJSONObject("dimensions").getString("height"));
-            insta.setWidth(response.getJSONObject("graphql").getJSONObject("shortcode_media").getJSONObject("dimensions").getString("width"));
-            callback.onInstagramObjectReady(insta);
+            dataObject.setUrl(response.getJSONObject("graphql").getJSONObject("shortcode_media").getString("video_url"));
+            dataObject.setExtension(".mp4");
+            dataObject.setIsVideo(true);
         }else {
-            insta.setUrl(response.getJSONObject("graphql").getJSONObject("shortcode_media").getString("display_url"));
-            insta.setName(response.getJSONObject("graphql").getJSONObject("shortcode_media").getString("id"));
-            insta.setExtension(".jpg");
-            insta.setIsVideo(false);
-            insta.setHeight(response.getJSONObject("graphql").getJSONObject("shortcode_media").getJSONObject("dimensions").getString("height"));
-            insta.setWidth(response.getJSONObject("graphql").getJSONObject("shortcode_media").getJSONObject("dimensions").getString("width"));
-            callback.onInstagramObjectReady(insta);
+            dataObject.setUrl(response.getJSONObject("graphql").getJSONObject("shortcode_media").getString("display_url"));
+            dataObject.setExtension(".jpg");
+            dataObject.setIsVideo(false);
         }
+        dataObject.setName(response.getJSONObject("graphql").getJSONObject("shortcode_media").getString("id"));
+        dataObject.setHeight(response.getJSONObject("graphql").getJSONObject("shortcode_media").getJSONObject("dimensions").getString("height"));
+        dataObject.setWidth(response.getJSONObject("graphql").getJSONObject("shortcode_media").getJSONObject("dimensions").getString("width"));
+        callback.onInstagramObjectReady(dataObject);
     }
-
-
 }

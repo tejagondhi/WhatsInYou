@@ -1,7 +1,7 @@
 package me.tejagondhi.whatsinyou.CallBacks;
 
-import me.tejagondhi.whatsinyou.Data.Instagram;
+import me.tejagondhi.whatsinyou.Data.FeedDataObject;
 
 public interface InstagramObjectReady {
-    void onInstagramObjectReady(Instagram instagram);
+    void onInstagramObjectReady(FeedDataObject instagram);
 }

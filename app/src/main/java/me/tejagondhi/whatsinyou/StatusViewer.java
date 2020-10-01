@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Objects;
 
 import me.tejagondhi.whatsinyou.CustomViews.FeedVideoView;
 
@@ -33,7 +34,7 @@ public class StatusViewer extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        file= (File) getIntent().getExtras().get("file");
+        file= (File) Objects.requireNonNull(getIntent().getExtras()).get("file");
         setContentView(R.layout.activity_status_viewer);
         ImageView statusImageView = findViewById(R.id.statusImageView);
         FeedVideoView statusVideoView = findViewById(R.id.statusVideoView);

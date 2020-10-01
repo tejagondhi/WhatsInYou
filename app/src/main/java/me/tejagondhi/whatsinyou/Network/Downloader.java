@@ -27,7 +27,7 @@ public class Downloader {
         final String path= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
         final ProgressDialog progressDialog =new ProgressDialog(context);
         progressDialog.setMessage("Downloading");
-        PRDownloader.download(url, path, newName+"."+ext)
+        PRDownloader.download(url, path, newName+ext)
                 .build()
                 .setOnStartOrResumeListener(new OnStartOrResumeListener() {
                     @Override

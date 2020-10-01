@@ -17,7 +17,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -28,15 +27,13 @@ import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Picasso;
-
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.HashMap;
 
 import me.tejagondhi.whatsinyou.CallBacks.InstagramObjectReady;
 import me.tejagondhi.whatsinyou.Data.DBHelper;
-import me.tejagondhi.whatsinyou.Data.Instagram;
+import me.tejagondhi.whatsinyou.Data.FeedDataObject;
 import me.tejagondhi.whatsinyou.Network.InstagramDownloader;
 
 public class MainActivity extends AppCompatActivity implements InstagramObjectReady {
@@ -57,9 +54,12 @@ public class MainActivity extends AppCompatActivity implements InstagramObjectRe
         if(clipboard !=null && clipboard.hasPrimaryClip()&&clipboard.getPrimaryClip()!=null){
             clip = clipboard.getPrimaryClip().getItemAt(0).coerceToText(MainActivity.this).toString();
             if(clip.toString().contains("facebook")){
-
+                Toast.makeText(this, "facebook link", Toast.LENGTH_SHORT).show();
+            }else if(clip.toString().contains("instagram")){
+                new InstagramDownloader(clip.toString().split("\\?")[0]+"?__a=1",MainActivity.this);
+            }else if(clip.toString().contains("youtube") || clip.toString().contains("youtu")){
+                Toast.makeText(this, "youtube link", Toast.LENGTH_SHORT).show();
             }
-            new InstagramDownloader(clip.toString().split("\\?")[0]+"?__a=1",MainActivity.this);
         }
     }
 
@@ -161,8 +161,8 @@ public class MainActivity extends AppCompatActivity implements InstagramObjectRe
     }
 
     @Override
-    public void onInstagramObjectReady(Instagram instagram) {
-        if(dbHelper.insertFeed(instagram.getName(),instagram.getUrl(),instagram.getOriginalURL(),instagram.getIsVideo()?"VIDEO":"IMAGE","INSTAGRAM",instagram.getHeight(),instagram.getWidth())){
+    public void onInstagramObjectReady(FeedDataObject instagram) {
+        if(dbHelper.insertFeed(instagram)){
             displayFeed();
         }
     }

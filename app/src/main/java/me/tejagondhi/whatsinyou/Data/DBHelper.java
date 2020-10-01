@@ -47,20 +47,19 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertFeed (String name,String url,String originalURL, String type, String source, String height, String width) {
+    public boolean insertFeed (@NonNull FeedDataObject data) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(FEED_COLUMN_NAME, name);
-        contentValues.put(FEED_COLUMN_URL, url);
-        contentValues.put(FEED_COLUMN_TYPE, type);
-        contentValues.put(FEED_COLUMN_SOURCE, source);
-        contentValues.put(FEED_COLUMN_ORIGINAL_URL, originalURL);
-        contentValues.put(FEED_COLUMN_HEIGHT,height);
-        contentValues.put(FEED_COLUMN_WIDTH,width);
+        contentValues.put(FEED_COLUMN_NAME, data.getName());
+        contentValues.put(FEED_COLUMN_URL, data.getUrl());
+        contentValues.put(FEED_COLUMN_TYPE, data.getIsVideo()?"VIDEO":"IMAGE");
+        contentValues.put(FEED_COLUMN_SOURCE, data.getSource());
+        contentValues.put(FEED_COLUMN_ORIGINAL_URL, data.getOriginalURL());
+        contentValues.put(FEED_COLUMN_HEIGHT,data.getHeight());
+        contentValues.put(FEED_COLUMN_WIDTH,data.getWidth());
         try{
             db.insertOrThrow(FEED_TABLE_NAME, null, contentValues);
         }catch (SQLiteConstraintException e){
-            Log.i("","");
             return false;
         }
         return true;
@@ -76,20 +75,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return (int) DatabaseUtils.queryNumEntries(db, FEED_TABLE_NAME);
     }
 
-    public boolean updateFeed (String name,Integer id, String url,String originalURL, String type, String source, String height, String width) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(FEED_COLUMN_NAME, name);
-        contentValues.put(FEED_COLUMN_URL, url);
-        contentValues.put(FEED_COLUMN_TYPE, type);
-        contentValues.put(FEED_COLUMN_SOURCE, source);
-        contentValues.put(FEED_COLUMN_ORIGINAL_URL, originalURL);
-        contentValues.put(FEED_COLUMN_HEIGHT,height);
-        contentValues.put(FEED_COLUMN_WIDTH,width);
-        db.update(FEED_TABLE_NAME, contentValues, "id = ? ", new String[] { Integer.toString(id) } );
-        return true;
-    }
-    public boolean updateFeed (HashMap<String,Instagram> updateList) {
+    public boolean updateFeed (@NonNull HashMap<String,FeedDataObject> updateList) {
         SQLiteDatabase db = this.getWritableDatabase();
         for (String key:updateList.keySet()) {
             ContentValues contentValues = new ContentValues();
@@ -99,7 +85,6 @@ public class DBHelper extends SQLiteOpenHelper {
         return true;
     }
 
-
     public Integer deleteFeed (Integer id) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(FEED_TABLE_NAME,
@@ -107,25 +92,24 @@ public class DBHelper extends SQLiteOpenHelper {
                 new String[] { Integer.toString(id) });
     }
 
-    public ArrayList<HashMap<String,String>> getFeed() {
-        ArrayList<HashMap<String,String>> array_list = new ArrayList<>();
+    public ArrayList<FeedDataObject> getFeed() {
+        ArrayList<FeedDataObject> array_list = new ArrayList<>();
 
-        //hp = new HashMap();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res =  db.rawQuery( "select * from "+FEED_TABLE_NAME+" ORDER BY id DESC", null );
         res.moveToFirst();
 
         while(!res.isAfterLast()){
-            HashMap<String,String> hashMapList = new  HashMap<String, String>();
-            hashMapList.put("ID",res.getString(res.getColumnIndex(FEED_COLUMN_ID)));
-            hashMapList.put("NAME",res.getString(res.getColumnIndex(FEED_COLUMN_NAME)));
-            hashMapList.put("URL",res.getString(res.getColumnIndex(FEED_COLUMN_URL)));
-            hashMapList.put("TYPE",res.getString(res.getColumnIndex(FEED_COLUMN_TYPE)));
-            hashMapList.put("SOURCE",res.getString(res.getColumnIndex(FEED_COLUMN_SOURCE)));
-            hashMapList.put("ORIGINAL_URL",res.getString(res.getColumnIndex(FEED_COLUMN_ORIGINAL_URL)));
-            hashMapList.put("HEIGHT",res.getString(res.getColumnIndex(FEED_COLUMN_HEIGHT)));
-            hashMapList.put("WIDTH",res.getString(res.getColumnIndex(FEED_COLUMN_WIDTH)));
-            array_list.add(hashMapList);
+            FeedDataObject data = new FeedDataObject();
+            data.setID(res.getString(res.getColumnIndex(FEED_COLUMN_ID)));
+            data.setName(res.getString(res.getColumnIndex(FEED_COLUMN_NAME)));
+            data.setUrl(res.getString(res.getColumnIndex(FEED_COLUMN_URL)));
+            data.setIsVideo(res.getString(res.getColumnIndex(FEED_COLUMN_TYPE)).equalsIgnoreCase("VIDEO"));
+            data.setSource(res.getString(res.getColumnIndex(FEED_COLUMN_SOURCE)));
+            data.setOriginalURL(res.getString(res.getColumnIndex(FEED_COLUMN_ORIGINAL_URL)));
+            data.setHeight(res.getString(res.getColumnIndex(FEED_COLUMN_HEIGHT)));
+            data.setWidth(res.getString(res.getColumnIndex(FEED_COLUMN_WIDTH)));
+            array_list.add(data);
             res.moveToNext();
         }
         res.close();
