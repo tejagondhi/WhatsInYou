@@ -23,13 +23,13 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/instagram"
+            android:id="@+id/logo"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Instagram"
             android:textSize="20sp"
+            android:id="@+id/list_title"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="20dp" />
     </LinearLayout>

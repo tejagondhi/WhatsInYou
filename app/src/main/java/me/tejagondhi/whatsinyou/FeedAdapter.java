@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -52,9 +53,19 @@ public class FeedAdapter extends ArrayAdapter<String> implements DownloadComplet
         final ImageView imageView = (ImageView) rowView.findViewById(R.id.listImageView);
         final FeedVideoView videoView = (FeedVideoView) rowView.findViewById(R.id.listVideoView);
         final ImageView videoPlayButton = (ImageView)rowView.findViewById(R.id.videoPlayButton);
+        TextView title= (TextView) rowView.findViewById(R.id.list_title);
         ImageView download= rowView.findViewById(R.id.downloadImage);
+        ImageView logo= rowView.findViewById(R.id.logo);
         final ImageView share= rowView.findViewById(R.id.shareImage);
 
+        title.setText(feedData.get(position).getSource());
+        if(feedData.get(position).getSource().equalsIgnoreCase("facebook")){
+            logo.setImageResource(R.drawable.facebook);
+        }else if (feedData.get(position).getSource().equalsIgnoreCase("instagram")){
+            logo.setImageResource(R.drawable.instagram);
+        }else{
+            logo.setImageResource(R.drawable.youtube);
+        }
         if(feedData.get(position).getIsVideo()) {
             videoView.setVideoSize(Integer.parseInt(feedData.get(position).getWidth()),Integer.parseInt(feedData.get(position).getHeight()));
             videoView.setVisibility(View.VISIBLE);
@@ -94,6 +105,7 @@ public class FeedAdapter extends ArrayAdapter<String> implements DownloadComplet
                     }
                 }
             });
+            videoView.seekTo(1);
         }else{
             videoView.setVisibility(View.GONE);
             imageView.setVisibility(View.VISIBLE);

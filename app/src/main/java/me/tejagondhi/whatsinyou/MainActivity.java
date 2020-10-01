@@ -31,12 +31,14 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.HashMap;
 
+import me.tejagondhi.whatsinyou.CallBacks.FacebookObjectReady;
 import me.tejagondhi.whatsinyou.CallBacks.InstagramObjectReady;
 import me.tejagondhi.whatsinyou.Data.DBHelper;
 import me.tejagondhi.whatsinyou.Data.FeedDataObject;
+import me.tejagondhi.whatsinyou.Network.FacebookDownloader;
 import me.tejagondhi.whatsinyou.Network.InstagramDownloader;
 
-public class MainActivity extends AppCompatActivity implements InstagramObjectReady {
+public class MainActivity extends AppCompatActivity implements InstagramObjectReady, FacebookObjectReady {
 
     DBHelper dbHelper;
     private ListView feedListView;
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements InstagramObjectRe
         if(clipboard !=null && clipboard.hasPrimaryClip()&&clipboard.getPrimaryClip()!=null){
             clip = clipboard.getPrimaryClip().getItemAt(0).coerceToText(MainActivity.this).toString();
             if(clip.toString().contains("facebook")){
-                Toast.makeText(this, "facebook link", Toast.LENGTH_SHORT).show();
+                new FacebookDownloader(this,clip.toString());
             }else if(clip.toString().contains("instagram")){
                 new InstagramDownloader(clip.toString().split("\\?")[0]+"?__a=1",MainActivity.this);
             }else if(clip.toString().contains("youtube") || clip.toString().contains("youtu")){
@@ -163,6 +165,13 @@ public class MainActivity extends AppCompatActivity implements InstagramObjectRe
     @Override
     public void onInstagramObjectReady(FeedDataObject instagram) {
         if(dbHelper.insertFeed(instagram)){
+            displayFeed();
+        }
+    }
+
+    @Override
+    public void OnFacebookObjectReady(FeedDataObject facebookData) {
+        if(dbHelper.insertFeed(facebookData)){
             displayFeed();
         }
     }

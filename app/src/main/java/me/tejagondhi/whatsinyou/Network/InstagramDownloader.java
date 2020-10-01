@@ -57,6 +57,7 @@ public class InstagramDownloader  {
         dataObject.setName(response.getJSONObject("graphql").getJSONObject("shortcode_media").getString("id"));
         dataObject.setHeight(response.getJSONObject("graphql").getJSONObject("shortcode_media").getJSONObject("dimensions").getString("height"));
         dataObject.setWidth(response.getJSONObject("graphql").getJSONObject("shortcode_media").getJSONObject("dimensions").getString("width"));
+        dataObject.setSource("Instagram");
         callback.onInstagramObjectReady(dataObject);
     }
 }
