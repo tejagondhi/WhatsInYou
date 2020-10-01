@@ -171,7 +171,16 @@ public class FeedAdapter extends ArrayAdapter<String> implements DownloadComplet
                     download(position,FeedAdapter.this);
                     break;
                 case R.id.delete:
-                    delete(position);
+                    AlertDialog.Builder errorDialog = new AlertDialog.Builder(context);
+                    errorDialog.setMessage("Are you sure, you want to delete?");
+                    errorDialog.setPositiveButton("delete", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            delete(position);
+                        }
+                    });
+                    errorDialog.setNegativeButton("Cancel",null);
+                    errorDialog.show();
                     break;
             }
         }
