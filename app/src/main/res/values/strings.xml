@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">WhatsInYou</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="home_tab">Home</string>
+    <string name="image_tab">Images</string>
+    <string name="video_tab">Videos</string>
+</resources>
