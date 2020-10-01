@@ -32,12 +32,14 @@ public class FeedAdapter extends ArrayAdapter<String> implements DownloadComplet
 
     private final MainActivity context;
     private final ArrayList<FeedDataObject> feedData;
+    private AlertDialog errorDialog;
 
 
     public FeedAdapter(@NonNull MainActivity context,@NonNull ArrayList<FeedDataObject> feedData) {
         super(context, R.layout.feed_listview);
         this.context=context;
         this.feedData = feedData;
+        initErrorDialog();
     }
 
     @Override
@@ -79,16 +81,9 @@ public class FeedAdapter extends ArrayAdapter<String> implements DownloadComplet
             videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
                 @Override
                 public boolean onError(MediaPlayer mp, int what, int extra) {
-                        AlertDialog.Builder errorDialog = new AlertDialog.Builder(context);
-                        errorDialog.setMessage("URL expired, do you want to refresh URL?");
-                        errorDialog.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                new ExpiredURLFixer(context).updateURLs();
-                            }
-                        });
-                        errorDialog.setNegativeButton("Cancel",null);
+                    if(errorDialog!=null&&!errorDialog.isShowing()){
                         errorDialog.show();
+                    }
                     return true;
                 }
             });
@@ -149,6 +144,23 @@ public class FeedAdapter extends ArrayAdapter<String> implements DownloadComplet
         }
         share.putExtra(Intent.EXTRA_STREAM,Uri.parse(file.toString()));
         context.startActivity(Intent.createChooser(share, "Share with"));
+    }
+
+    public void initErrorDialog(){
+        errorDialog = new AlertDialog.Builder(context).create();
+        errorDialog.setMessage("URL expired, do you want to refresh URL?");
+        errorDialog.setButton(DialogInterface.BUTTON_POSITIVE,"OK",new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                new ExpiredURLFixer(context).updateURLs();
+            }
+        });
+        errorDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                errorDialog.dismiss();
+            }
+        });
     }
 
     @Override
