@@ -4,28 +4,33 @@ import android.content.Context;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import me.tejagondhi.whatsinyou.CallBacks.FacebookObjectReady;
 import me.tejagondhi.whatsinyou.CallBacks.InstagramObjectReady;
 import me.tejagondhi.whatsinyou.Data.DBHelper;
 import me.tejagondhi.whatsinyou.Data.FeedDataObject;
 
 public class ExpiredURLFixer {
+    private final DBHelper dbHelper;
     Context context;
-    HashMap<String, FeedDataObject> updateList= new HashMap<>();
-    DBHelper dbHelper =new DBHelper(context);
+
     public ExpiredURLFixer(Context context) {
         this.context = context;
+        dbHelper = new DBHelper(context);
     }
 
     public void updateURLs(){
         ArrayList<FeedDataObject> data = dbHelper.getFeed();
         for (FeedDataObject row:data) {
-            new InstagramDownloader(row.getOriginalURL(),new UpdateCallback(row.getID()));
+            if(row.getSource().equalsIgnoreCase("Instagram")){
+                new InstagramDownloader(row.getOriginalURL(),new UpdateCallback(row.getID()));
+            }else if (row.getSource().equalsIgnoreCase("Facebook")){
+                new FacebookDownloader(new UpdateCallback(row.getID()),row.getOriginalURL());
+            }
         }
-        if(updateList.size()>0){
-            dbHelper.updateFeed(updateList);
-        }
+
     }
-    public class UpdateCallback implements InstagramObjectReady {
+    public class UpdateCallback implements InstagramObjectReady, FacebookObjectReady {
         String id;
 
         public UpdateCallback(String id) {
@@ -34,7 +39,12 @@ public class ExpiredURLFixer {
 
         @Override
         public void onInstagramObjectReady(FeedDataObject instagram) {
-            updateList.put(id,instagram);
+            dbHelper.updateFeed(instagram,id);
+        }
+
+        @Override
+        public void OnFacebookObjectReady(FeedDataObject facebookData) {
+            dbHelper.updateFeed(facebookData,id);
         }
     }
 }

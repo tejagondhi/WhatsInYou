@@ -75,13 +75,11 @@ public class DBHelper extends SQLiteOpenHelper {
         return (int) DatabaseUtils.queryNumEntries(db, FEED_TABLE_NAME);
     }
 
-    public boolean updateFeed (@NonNull HashMap<String,FeedDataObject> updateList) {
+    public boolean updateFeed (@NonNull FeedDataObject updateList,String id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        for (String key:updateList.keySet()) {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(FEED_COLUMN_URL, updateList.get(key).getUrl());
-            db.update(FEED_TABLE_NAME, contentValues, "id = ? ", new String[] { key } );
-        }
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(FEED_COLUMN_URL, updateList.getUrl());
+        db.update(FEED_TABLE_NAME, contentValues, "id = ? ", new String[] { id } );
         return true;
     }
 
