@@ -66,13 +66,18 @@
             android:layout_alignParentTop="true"
             android:id="@+id/listVideoView"/>
         </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#99000000"
+            android:id="@+id/shade"/>
 
         <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:id="@+id/videoPlayButton"
             android:layout_gravity="center"
-            android:src="@drawable/ic_baseline_play_circle_outline_24"
+            android:src="@drawable/ic_baseline_play_arrow_24"
             app:tint="#FFFFFF" />
     </FrameLayout>
 

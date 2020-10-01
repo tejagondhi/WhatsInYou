@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -58,6 +59,7 @@ public class FeedAdapter extends ArrayAdapter<String> implements DownloadComplet
         ImageView logo= rowView.findViewById(R.id.logo);
         final ImageView share= rowView.findViewById(R.id.shareImage);
         ImageView delete= rowView.findViewById(R.id.delete);
+        final RelativeLayout shade= rowView.findViewById(R.id.shade);
 
         String titleText=feedData.get(position).getSource();
         title.setText(titleText);
@@ -94,6 +96,7 @@ public class FeedAdapter extends ArrayAdapter<String> implements DownloadComplet
                 @Override
                 public void onCompletion(MediaPlayer mp) {
                     videoPlayButton.setVisibility(View.VISIBLE);
+                    shade.setVisibility(View.VISIBLE);
                 }
             });
             videoView.setOnClickListener(new View.OnClickListener() {
@@ -102,9 +105,11 @@ public class FeedAdapter extends ArrayAdapter<String> implements DownloadComplet
                     if(videoView.isPlaying()){
                         videoView.pause();
                         videoPlayButton.setVisibility(View.VISIBLE);
+                        shade.setVisibility(View.VISIBLE);
                     }else {
                         videoView.start();
                         videoPlayButton.setVisibility(View.INVISIBLE);
+                        shade.setVisibility(View.INVISIBLE);
                     }
                 }
             });
